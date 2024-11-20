@@ -77,7 +77,7 @@ public class RadioService extends Service {
                .setContentText("reproducuiendo en segudo plano")
                .setSmallIcon(R.drawable.iconradio)
                .setContentIntent(pendingIntent)
-               .setPriority(NotificationCompat.PRIORITY_LOW)
+               .setPriority(NotificationCompat.PRIORITY_HIGH)
                .setOngoing(true);
        return builder.build();
     }
@@ -90,8 +90,8 @@ public class RadioService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,
                     "Canal de Radio",
-                    NotificationManager.IMPORTANCE_LOW);
-
+                    NotificationManager.IMPORTANCE_HIGH);
+            serviceChannel.setDescription("notificacion de radio");
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager !=null){
                 manager.createNotificationChannel(serviceChannel);
