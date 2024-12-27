@@ -47,12 +47,4 @@
         app:layout_constraintVertical_bias="0.362"
         />
 
-    <TextView
-        android:id="@+id/txt_prueba"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="texto de Prueba"
-        tools:layout_editor_absoluteX="171dp"
-        tools:layout_editor_absoluteY="40dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

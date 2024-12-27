@@ -1,7 +1,10 @@
 package com.example.ajplayer;
 
+import android.Manifest;
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +15,10 @@ import com.airbnb.lottie.LottieDrawable;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import java.security.Permission;
+import java.security.Permissions;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startPlayerService() {
+        //verficar y solicitar permisos en android superiores a 13
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+                return;
+            }
+
+        }
+
+
 
         Intent serviceIntent = new Intent(this, RadioService.class);
         startService(serviceIntent);
@@ -82,6 +100,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    public void onRequestPermissionsResult( int requestCode, String[]permissions, int [] grandResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grandResults);
+
+        if (requestCode == 1){
+            if (grandResults.length > 0 && grandResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startPlayerService();
+                Log.d("MainActivity", "permiso concedido");
+            }else  {
+                //permiso denegado avisar al usuario
+                Toast.makeText(this, "permiso denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //notificaal srvicio para que muestre la notificacion
+        Intent intent = new Intent(this, RadioService.class);
+        intent.setAction("SHOW_NOTIFICATION");
+        startService(intent);
+
+    }
+
+
+@Override
+protected void onResume(){
+        super.onResume();
+        //notifica al servicio para que oculte la notificacion
+    Intent intent = new Intent(this, RadioService.class);
+    intent.setAction("HIDE_NOTIFICATION");
+    startService(intent);
+}
+
+
+
 
 
 }
